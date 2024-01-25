@@ -10,5 +10,6 @@ namespace StoreAPI.Domain.Interfaces.Repositories
         Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task RemoveAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
+        Task<List<TEntity>> GetByPage(int page, int pageSize);
     }
 }

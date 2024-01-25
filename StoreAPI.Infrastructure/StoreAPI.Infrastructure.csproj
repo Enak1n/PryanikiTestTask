@@ -7,11 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <ProjectReference Include="..\StoreAPI.Domain.Interfaces\StoreAPI.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\StoreAPI.Domain\StoreAPI.Domain.csproj" />
   </ItemGroup>
 
 </Project>
