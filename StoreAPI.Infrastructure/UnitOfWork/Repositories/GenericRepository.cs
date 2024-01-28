@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using StoreAPI.Domain.Entities;
 using StoreAPI.Domain.Interfaces.Repositories;
 using StoreAPI.Infrastructure.DataBase;
 using System.Linq.Expressions;
 
 namespace StoreAPI.Infrastructure.UnitOfWork.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : BaseEntity
     {
         private readonly Context _context;
         private readonly DbSet<TEntity> _dataBase;
@@ -22,9 +23,9 @@ namespace StoreAPI.Infrastructure.UnitOfWork.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate)
         {
-            throw new NotImplementedException();
+            return await _dataBase.Where(predicate).FirstOrDefaultAsync();
         }
 
         public async Task<List<TEntity>> GetAllAsync()
@@ -44,12 +45,13 @@ namespace StoreAPI.Infrastructure.UnitOfWork.Repositories
                 Take(pageSize).ToListAsync();
         }
 
-        public Task RemoveAsync(TEntity entity)
+        public async Task RemoveAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await _dataBase.Where(e => e.Id == id).ExecuteDeleteAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(TEntity entity)
+        public Task UpdateAsync(Guid id)
         {
             throw new NotImplementedException();
         }
