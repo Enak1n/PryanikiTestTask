@@ -1,38 +1,104 @@
 ﻿using StoreAPI.Domain.Entities;
+using StoreAPI.Domain.Exceptions;
+using StoreAPI.Domain.Interfaces.Repositories;
 using StoreAPI.Service.Interfaces;
 
 namespace StoreAPI.Service.Business
 {
     public class OrderService : IOrderService
     {
-        public Task<Order> Cancel(Guid id)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public OrderService(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<Order> Create(Order product)
+        public async Task<Order> Cancel(Guid id)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+            if (order == null)
+                throw new NotFoundException($"Order with Id {id} not found!");
+
+            if (order.IsCanceled)
+                throw new Exception("Order has been already canceled!");
+
+            order.IsCanceled = true;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return order;
         }
 
-        public Task<List<Order>> GetAll()
+        public async Task<Order> Create(Order order)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.Orders.AddAsync(order);
+
+            return order;
         }
 
-        public Task<Order> GetById(Guid id)
+        public async Task<List<Order>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Orders.GetAllAsync();
         }
 
-        public Task<Order> IsPaymented(Guid id)
+        public async Task<Order> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+            if(order == null)
+            {
+                throw new NotFoundException($"Order with id {id} not found!");
+            }
+
+            return order;
         }
 
-        public Task<Order> IsReady(Guid id)
+        public async Task<Order> IsPaymented(Guid id)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+            if (order == null)
+                throw new NotFoundException($"Order with ID {id} not found!");
+
+            if (order.IsPaymented)
+                throw new Exception("Order has been already paid!");
+
+            if (order.IsCanceled)
+                throw new Exception("Order was canceled!");
+
+            order.IsPaymented = true;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task<Order> IsReady(Guid id)
+        {
+            var order = await _unitOfWork.Orders.GetByIdAsync(id);
+
+            if (order == null)
+                throw new NotFoundException($"Order with this Id {id} not found!");
+
+            if (order.IsCanceled)
+                throw new Exception("Order has been canceled!");
+
+
+            if (order.IsReady)
+                throw new Exception("Order has been already readied!");
+
+            order.IsReady = true;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return order;
+        }
+
+        public async Task Remove(Guid id)
+        {
+            await _unitOfWork.Orders.RemoveAsync(id);
         }
     }
 }

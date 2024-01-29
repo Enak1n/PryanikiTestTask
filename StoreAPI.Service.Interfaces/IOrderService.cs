@@ -6,9 +6,10 @@ namespace StoreAPI.Service.Interfaces
     {
         Task<List<Order>> GetAll();
         Task<Order> GetById(Guid id);
-        Task<Order> Create(Order product);
+        Task<Order> Create(Order order);
         Task<Order> IsReady(Guid id);
         Task<Order> IsPaymented(Guid id);
         Task<Order> Cancel(Guid id);
+        Task Remove(Guid id);
     }
 }

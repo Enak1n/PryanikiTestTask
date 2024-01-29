@@ -1,33 +1,57 @@
 ﻿using StoreAPI.Domain.Entities;
+using StoreAPI.Domain.Exceptions;
+using StoreAPI.Domain.Interfaces.Repositories;
 using StoreAPI.Service.Interfaces;
 
 namespace StoreAPI.Service.Business
 {
     public class ProdcutService : IProductService
     {
-        public Task<Product> Create(Product product)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProdcutService(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
         }
 
-        public Task DeleteById(Guid id)
+        public async Task<Product> Create(Product product)
         {
-            throw new NotImplementedException();
+            var res = await _unitOfWork.Products.FindAsync(x => x.Name == product.Name);
+
+            if(res != null)
+            {
+                throw new UniqueException($"Product with name {product.Name} already exist!");
+            }
+
+            await _unitOfWork.Products.AddAsync(product);
+            return product;
         }
 
-        public Task<List<Product>> GetAll()
+        public async Task DeleteById(Guid id)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.Products.RemoveAsync(id);
         }
 
-        public Task<Product> GetById(Guid id)
+        public async Task<List<Product>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.Products.GetAllAsync();
         }
 
-        public Task Update(Product product)
+        public async Task<Product> GetById(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _unitOfWork.Products.GetByIdAsync(id);
+
+            if(product == null)
+            {
+                throw new NotFoundException($"Product with {id} not found!");
+            }
+
+            return product;
+        }
+
+        public async Task Update(Product product)
+        {
+            await _unitOfWork.Products.EditAsync(product.Id, product.Name, product.Price);
         }
     }
 }

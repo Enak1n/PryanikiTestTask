@@ -33,9 +33,9 @@ namespace StoreAPI.Infrastructure.UnitOfWork.Repositories
             return await _dataBase.AsNoTracking().ToListAsync();
         }
 
-        public TEntity GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(Guid id)
         {
-            return _dataBase.Find(id);
+            return await _dataBase.FindAsync(id);
         }
 
         public async Task<List<TEntity>> GetByPage(int page, int pageSize)
