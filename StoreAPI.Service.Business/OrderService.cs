@@ -31,8 +31,16 @@ namespace StoreAPI.Service.Business
             return order;
         }
 
-        public async Task<Order> Create(Order order)
+        public async Task<Order> Create(Order order, List<Product> products)
         {
+            double totalCost = 0;
+
+            foreach (var product in products) 
+            {
+                totalCost += product.Price;
+            }
+
+            order.TotalCost = totalCost;
             await _unitOfWork.Orders.AddAsync(order);
 
             return order;
@@ -84,7 +92,6 @@ namespace StoreAPI.Service.Business
 
             if (order.IsCanceled)
                 throw new Exception("Order has been canceled!");
-
 
             if (order.IsReady)
                 throw new Exception("Order has been already readied!");

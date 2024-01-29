@@ -11,6 +11,8 @@ namespace StoreAPI.Utilities
             CreateMap<Product, ProductDTOResponse>();
             CreateMap<ProductDTORequest, Product>();
             CreateMap<Product, ProductDTORequest>();
+            CreateMap<OrderDTORequest, Order>();
+            CreateMap<Order, OrderDTOResponse>();
         }
     }
 }
