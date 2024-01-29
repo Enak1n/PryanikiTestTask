@@ -5,6 +5,9 @@ using StoreAPI.Infrastructure.UnitOfWork.Repositories;
 using StoreAPI.Service.Interfaces;
 using StoreAPI.Service.Business;
 using AutoMapper;
+using FluentValidation.AspNetCore;
+using StoreAPI.Domain.Validators;
+using StoreAPI.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 var databaseConnection = builder.Configuration.GetConnectionString("DbConnection");
@@ -17,8 +20,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProdcutService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
-builder.Services.AddAutoMapper(typeof(Mapper));
-
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

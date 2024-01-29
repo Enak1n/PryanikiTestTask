@@ -7,7 +7,7 @@ namespace StoreAPI.Service.Interfaces
         Task<List<Product>> GetAll();
         Task<Product> GetById(Guid id);
         Task<Product> Create(Product product);
-        Task Update(Product product);
+        Task Update(Guid id, string name, double price);
         Task DeleteById(Guid id);
     }
 }

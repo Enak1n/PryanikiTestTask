@@ -24,6 +24,7 @@ namespace StoreAPI.Service.Business
             }
 
             await _unitOfWork.Products.AddAsync(product);
+            await _unitOfWork.SaveChangesAsync();
             return product;
         }
 
@@ -49,9 +50,9 @@ namespace StoreAPI.Service.Business
             return product;
         }
 
-        public async Task Update(Product product)
+        public async Task Update(Guid id, string name, double price)
         {
-            await _unitOfWork.Products.EditAsync(product.Id, product.Name, product.Price);
+            await _unitOfWork.Products.EditAsync(id, name, price);
         }
     }
 }

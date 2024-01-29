@@ -16,8 +16,4 @@
     <ProjectReference Include="..\StoreAPI.Domain\StoreAPI.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTO\" />
-  </ItemGroup>
-
 </Project>

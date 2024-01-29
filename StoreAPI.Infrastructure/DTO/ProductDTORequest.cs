@@ -1,6 +1,6 @@
-﻿namespace StoreAPI.Domain.Entities
+﻿namespace StoreAPI.Infrastructure.DTO
 {
-    public class Product : BaseEntity
+    public class ProductDTORequest
     {
         public string Name { get; set; }
         public double Price { get; set; }
