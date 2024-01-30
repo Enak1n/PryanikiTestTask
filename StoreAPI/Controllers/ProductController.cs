@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using StoreAPI.Domain.Entities;
 using StoreAPI.Domain.Exceptions;
@@ -7,6 +9,7 @@ using StoreAPI.Domain.Validators;
 using StoreAPI.Infrastructure.DTO;
 using StoreAPI.Infrastructure.UnitOfWork.Repositories;
 using StoreAPI.Service.Interfaces;
+using System;
 
 namespace StoreAPI.Controllers
 {
@@ -16,12 +19,14 @@ namespace StoreAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private IValidator<Product> _validator;
         private readonly IMapper _mapper;
-
-        public ProductController(IProductService productService, IMapper mapper)
+         
+        public ProductController(IProductService productService, IMapper mapper, IValidator<Product> validator)
         {
             _productService = productService;
             _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpGet]
@@ -57,6 +62,13 @@ namespace StoreAPI.Controllers
             try
             {
                 var product = _mapper.Map<ProductDTORequest, Product>(productDTORequest);
+                ValidationResult result = await _validator.ValidateAsync(product);
+
+                if(!result.IsValid)
+                {
+                    return BadRequest(result.Errors);
+                }
+
                 var createdProdcut = await _productService.Create(product);
 
                 return Ok(createdProdcut);

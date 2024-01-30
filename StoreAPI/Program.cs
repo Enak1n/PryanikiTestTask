@@ -8,6 +8,9 @@ using AutoMapper;
 using FluentValidation.AspNetCore;
 using StoreAPI.Domain.Validators;
 using StoreAPI.Utilities;
+using FluentValidation;
+using System;
+using StoreAPI.Domain.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 var databaseConnection = builder.Configuration.GetConnectionString("DbConnection");
@@ -19,6 +22,7 @@ builder.Services.AddDbContext<Context>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProdcutService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IValidator<Product>, ProductValidator>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddFluentValidationClientsideAdapters();
